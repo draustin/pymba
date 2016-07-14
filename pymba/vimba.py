@@ -94,13 +94,16 @@ class Vimba(object):
                 interfaceInfo for interfaceInfo in interfaceInfoArray)
         return self._interfaceInfos
 
-    def _getCameraInfos(self):
+    def _getCameraInfos(self,refresh=False):
         """
         Gets camera info of all attached cameras.
-
+        
+        :param refresh: refresh the list i.e. for when a camera has been connected
+            or disconnected
+        
         :returns: list -- camera info for available cameras.
         """
-        if self._cameraInfos is None:
+        if self._cameraInfos is None or refresh:
             # args
             dummyCameraInfo = structs.VimbaCameraInfo()
             numFound = c_uint32(-1)
@@ -146,13 +149,13 @@ class Vimba(object):
         """
         return list(interfaceInfo.interfaceIdString for interfaceInfo in self._getInterfaceInfos())
 
-    def getCameraIds(self):
+    def getCameraIds(self,refresh=False):
         """
         Gets IDs of all available cameras.
 
         :returns: list -- camera IDs for available cameras.
         """
-        return list(camInfo.cameraIdString.decode() for camInfo in self._getCameraInfos())
+        return list(camInfo.cameraIdString.decode() for camInfo in self._getCameraInfos(refresh))
 
     def getInterfaceInfo(self, interfaceId):
         """
@@ -181,7 +184,7 @@ class Vimba(object):
         # don't do this live as we already have this info
         # return info object if it exists
         for camInfo in self._getCameraInfos():
-            if camInfo.cameraIdString == cameraId:
+            if camInfo.cameraIdString.decode() == cameraId:
                 return camInfo
         # otherwise raise error
         raise VimbaException(-50)
