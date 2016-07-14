@@ -22,6 +22,7 @@ def test_interfaces():
             print('Interface feature:', name)
 
         # close interface
+        print('Closing interface')
         interface0.closeInterface()
 
 if __name__ == '__main__':
